@@ -1,0 +1,137 @@
+import csv
+import os
+
+FILE_NAME = "expenses.csv"
+
+
+# Create CSV file if it does not exist
+def create_file():
+    if not os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(["Date", "Category", "Amount", "Description"])
+
+
+# Add expense
+def add_expense():
+    date = input("Enter date (DD-MM-YYYY): ")
+    category = input("Enter category (Food/Travel/Shopping/etc.): ")
+
+    try:
+        amount = float(input("Enter amount: "))
+    except ValueError:
+        print("Invalid amount!")
+        return
+
+    description = input("Enter description: ")
+
+    with open(FILE_NAME, "a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([date, category, amount, description])
+
+    print("Expense added successfully!")
+
+
+# View all expenses
+def view_expenses():
+    with open(FILE_NAME, "r") as file:
+        reader = csv.DictReader(file)
+
+        print("\n===== All Expenses =====")
+
+        found = False
+
+        for row in reader:
+            found = True
+            print(
+                f"Date: {row['Date']} | "
+                f"Category: {row['Category']} | "
+                f"Amount: ₹{row['Amount']} | "
+                f"Description: {row['Description']}"
+            )
+
+        if not found:
+            print("No expenses found.")
+
+
+# Filter expenses by category
+def filter_expenses():
+    category = input("Enter category to filter: ").lower()
+
+    with open(FILE_NAME, "r") as file:
+        reader = csv.DictReader(file)
+
+        print("\n===== Filtered Expenses =====")
+
+        found = False
+
+        for row in reader:
+            if row["Category"].lower() == category:
+                found = True
+                print(
+                    f"Date: {row['Date']} | "
+                    f"Amount: ₹{row['Amount']} | "
+                    f"Description: {row['Description']}"
+                )
+
+        if not found:
+            print("No expenses found for this category.")
+
+
+# Category summary
+def category_summary():
+    summary = {}
+
+    with open(FILE_NAME, "r") as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            category = row["Category"]
+            amount = float(row["Amount"])
+
+            if category in summary:
+                summary[category] += amount
+            else:
+                summary[category] = amount
+
+    print("\n===== Category Summary =====")
+
+    if not summary:
+        print("No expenses found.")
+        return
+
+    for category, total in summary.items():
+        print(f"{category}: ₹{total:.2f}")
+
+
+# Main program
+create_file()
+
+while True:
+    print("\n===== Personal Expense Tracker =====")
+    print("1. Add Expense")
+    print("2. View Expenses")
+    print("3. Filter by Category")
+    print("4. Category Summary")
+    print("5. Exit")
+
+    choice = input("Enter your choice (1-5): ")
+
+    if choice == "1":
+        add_expense()
+
+    elif choice == "2":
+        view_expenses()
+
+    elif choice == "3":
+        filter_expenses()
+
+    elif choice == "4":
+        category_summary()
+
+    elif choice == "5":
+        print("Thank you for using Expense Tracker!")
+        break
+
+    else:
+        print("Invalid choice! Please try again.")
