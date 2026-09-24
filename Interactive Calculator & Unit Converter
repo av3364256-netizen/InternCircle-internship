@@ -1,0 +1,73 @@
+# Interactive Calculator & Unit Converter
+
+print("===== Interactive Calculator & Unit Converter =====")
+
+while True:
+    print("\nChoose an option:")
+    print("1. Basic Calculator")
+    print("2. Kilometer to Miles")
+    print("3. Celsius to Fahrenheit")
+    print("4. Exit")
+
+    choice = input("Enter your choice (1-4): ")
+
+    # Basic Calculator
+    if choice == "1":
+        try:
+            num1 = float(input("Enter first number: "))
+            operator = input("Enter operator (+, -, *, /): ")
+            num2 = float(input("Enter second number: "))
+
+            if operator == "+":
+                result = num1 + num2
+            elif operator == "-":
+                result = num1 - num2
+            elif operator == "*":
+                result = num1 * num2
+            elif operator == "/":
+                if num2 == 0:
+                    print("Error: Cannot divide by zero.")
+                    continue
+                result = num1 / num2
+            else:
+                print("Invalid operator!")
+                continue
+
+            print("Result:", result)
+
+        except ValueError:
+            print("Invalid input! Please enter numbers.")
+
+    # Kilometer to Miles
+    elif choice == "2":
+        try:
+            km = float(input("Enter distance in kilometers: "))
+
+            if km < 0:
+                print("Distance cannot be negative.")
+                continue
+
+            miles = km * 0.621371
+            print("Distance in miles:", miles)
+
+        except ValueError:
+            print("Invalid input! Please enter a number.")
+
+    # Celsius to Fahrenheit
+    elif choice == "3":
+        try:
+            celsius = float(input("Enter temperature in Celsius: "))
+
+            fahrenheit = (celsius * 9 / 5) + 32
+            print("Temperature in Fahrenheit:", fahrenheit)
+
+        except ValueError:
+            print("Invalid input! Please enter a number.")
+
+    # Exit
+    elif choice == "4":
+        print("Thank you for using the program!")
+        break
+
+    else:
+        print("Invalid choice! Please select 1, 2, 3, or 4.")
