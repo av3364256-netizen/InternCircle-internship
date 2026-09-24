@@ -1,0 +1,52 @@
+import requests
+from bs4 import BeautifulSoup
+import json
+
+# Website URL
+url = "https://news.ycombinator.com/"
+
+try:
+    # Send HTTP request
+    response = requests.get(url, timeout=10)
+
+    # Check if request was successful
+    response.raise_for_status()
+
+    # Parse HTML
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Find headlines
+    headlines = soup.find_all("span", class_="titleline")
+
+    data = []
+
+    for headline in headlines[:10]:
+        link = headline.find("a")
+
+        if link:
+            title = link.get_text(strip=True)
+            article_url = link.get("href")
+
+            data.append({
+                "headline": title,
+                "url": article_url
+            })
+
+    # Save data to JSON file
+    with open("headlines.json", "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
+
+    print("Web scraping completed successfully!")
+    print("10 headlines saved in headlines.json")
+
+    # Display headlines
+    print("\n===== Latest Tech Headlines =====")
+
+    for item in data:
+        print("-", item["headline"])
+
+except requests.exceptions.RequestException as error:
+    print("Error while accessing website:", error)
+
+except Exception as error:
+    print("Something went wrong:", error)
